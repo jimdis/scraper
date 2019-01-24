@@ -9,8 +9,15 @@ const matcher = new CalendarMatcher(url)
 const matchCalendars = async () => {
   matcher.baseLinks = await matcher.getLinks(matcher.baseURL)
   matcher.calendars = await matcher.getLinks(matcher.baseLinks[0])
+  let freeDays = []
+  for (let calendar of matcher.calendars) {
+    let days = await matcher.getDays(calendar)
+    freeDays.push(days)
+  }
+  // matcher.calendars.forEach(async calendar => freeDays.push(await matcher.getDays(calendar)))
+  console.log(freeDays)
 
-  console.log(matcher.calendars)
+  // console.log(matcher.calendars)
 }
 
 matchCalendars()
