@@ -4,6 +4,7 @@ const Calendar = require('./lib/Calendars')
 const Cinema = require('./lib/Cinema')
 const Restaurant = require('./lib/Restaurant')
 const scraper = require('./lib/scraper')
+const output = require('./lib/output')
 
 const url = 'http://vhost3.lnu.se:20080/weekend'
 
@@ -20,12 +21,9 @@ const url = 'http://vhost3.lnu.se:20080/weekend'
     const cinema = new Cinema(links.cinema, calendar.availableDays)
     await cinema.getMovies()
     await cinema.matchTimes()
-    // [
-    //   { day: 'friday', hours: [18, 20] },
-    //   { day: 'saturday', hours: [18] }
-    // ]
-    // const restaurant = new Restaurant(links.restaurant, times)
-    // restaurant.getFreeTables()
+    const restaurant = new Restaurant(links.restaurant, cinema.checkTables)
+    await restaurant.getFreeTables()
+    output.logResults(cinema.possibleEvenings, restaurant.availableTables)
     // console.log(cinema.moviesPlaying)
   } catch (e) { console.error(e) }
 })()
