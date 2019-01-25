@@ -1,7 +1,8 @@
 'use strict'
 
-const Calendars = require('./lib/Calendars')
+const Calendar = require('./lib/Calendars')
 const Cinema = require('./lib/Cinema')
+const Restaurant = require('./lib/Restaurant')
 const scraper = require('./lib/scraper')
 
 const url = 'http://vhost3.lnu.se:20080/weekend'
@@ -12,13 +13,19 @@ const url = 'http://vhost3.lnu.se:20080/weekend'
     links = {
       calendar: links[0],
       cinema: links[1],
-      dinner: links[2]
+      restaurant: links[2]
     }
-    const calendars = new Calendars(links.calendar)
-    await calendars.matchDays()
-    const cinema = new Cinema(links.cinema, calendars.availableDays)
-    await cinema.getMovies()
-    cinema.matchTimes()
+    // const calendar = new Calendar(links.calendar)
+    // await calendar.matchDays()
+    // const cinema = new Cinema(links.cinema, calendar.availableDays)
+    // await cinema.getMovies()
+    // await cinema.matchTimes()
+    let times = [
+      { day: 'friday', hours: [18, 20] },
+      { day: 'saturday', hours: [18] }
+    ]
+    const restaurant = new Restaurant(links.restaurant, times)
+    restaurant.getFreeTables()
     // console.log(cinema.moviesPlaying)
   } catch (e) { console.error(e) }
 })()
