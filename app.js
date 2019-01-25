@@ -15,17 +15,17 @@ const url = 'http://vhost3.lnu.se:20080/weekend'
       cinema: links[1],
       restaurant: links[2]
     }
-    // const calendar = new Calendar(links.calendar)
-    // await calendar.matchDays()
-    // const cinema = new Cinema(links.cinema, calendar.availableDays)
-    // await cinema.getMovies()
-    // await cinema.matchTimes()
-    let times = [
-      { day: 'friday', hours: [18, 20] },
-      { day: 'saturday', hours: [18] }
-    ]
-    const restaurant = new Restaurant(links.restaurant, times)
-    restaurant.getFreeTables()
+    const calendar = new Calendar(links.calendar)
+    await calendar.matchDays()
+    const cinema = new Cinema(links.cinema, calendar.availableDays)
+    await cinema.getMovies()
+    await cinema.matchTimes()
+    // [
+    //   { day: 'friday', hours: [18, 20] },
+    //   { day: 'saturday', hours: [18] }
+    // ]
+    // const restaurant = new Restaurant(links.restaurant, times)
+    // restaurant.getFreeTables()
     // console.log(cinema.moviesPlaying)
   } catch (e) { console.error(e) }
 })()
