@@ -1,26 +1,47 @@
 'use strict'
 
-const CalendarMatcher = require('./lib/CalendarMatcher')
+const Calendars = require('./lib/Calendars')
+const Cinema = require('./lib/Cinema')
+const scraper = require('./lib/scraper')
 
 const url = 'http://vhost3.lnu.se:20080/weekend'
 
-const matcher = new CalendarMatcher(url)
-
-const matchCalendars = async () => {
+;(async () => {
   try {
-    matcher.baseLinks = await matcher.getLinks(matcher.baseURL)
-    matcher.calendars = await matcher.getLinks(matcher.baseLinks[0])
-    let freeDays = []
-    for (let calendar of matcher.calendars) {
-      let days = await matcher.getDays(calendar)
-      freeDays.push(days)
+    let links = await scraper.getLinks(url)
+    links = {
+      calendar: links[0],
+      cinema: links[1],
+      dinner: links[2]
     }
-    matcher.availableDays = matcher.matchDays(freeDays)
-    matcher.getMovies()
+    const calendars = new Calendars(links.calendar)
+    await calendars.matchDays()
+    const cinema = new Cinema(links.cinema, calendars.availableDays)
+    await cinema.getMovies()
+    cinema.matchTimes()
+    // console.log(cinema.moviesPlaying)
   } catch (e) { console.error(e) }
-}
+})()
 
-matchCalendars()
+// try {
+//   calendars.getLinks
+// }
+
+// const matchCalendars = async () => {
+//   try {
+//     matcher.baseLinks = await matcher.getLinks(matcher.baseURL)
+//     matcher.calendars = await matcher.getLinks(matcher.baseLinks[0])
+//     let freeDays = []
+//     for (let calendar of matcher.calendars) {
+//       let days = await matcher.getDays(calendar)
+//       freeDays.push(days)
+//     }
+//     matcher.availableDays = matcher.matchDays(freeDays)
+//     matcher.getMovies()
+//   } catch (e) { console.error(e) }
+// }
+
+// matchCalendars()
 
 // const getMatch = async (url) => {
 //   let html = await scraper.scrape(url)
