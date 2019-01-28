@@ -6,7 +6,10 @@ const Restaurant = require('./lib/Restaurant')
 const scraper = require('./lib/scraper')
 const output = require('./lib/output')
 
-const url = 'http://vhost3.lnu.se:20080/weekend'
+const url = process.argv.slice(2).toString()
+// console.log(url)
+// URL 1: 'http://vhost3.lnu.se:20080/weekend'
+// URL 2: 'http://cscloud304.lnu.se:8080/'
 
 ;(async () => {
   try {
@@ -22,7 +25,8 @@ const url = 'http://vhost3.lnu.se:20080/weekend'
     await cinema.getMovies()
     await cinema.matchTimes()
     const restaurant = new Restaurant(links.restaurant, cinema.checkTables)
-    await restaurant.getFreeTables()
+    await restaurant.getCookie()
+    // await restaurant.getFreeTables()
     output.logResults(cinema.possibleEvenings, restaurant.availableTables)
     // console.log(cinema.moviesPlaying)
   } catch (e) { console.error(e) }
