@@ -15,10 +15,11 @@ const output = require('./lib/output')
 
 const url = process.argv.slice(2).toString()
 
-// Scrapes urls for relevant data and outputs matched tables and movies.
-;(async () => {
+  // Scrapes urls for relevant data and outputs matched tables and movies.
+  ; (async () => {
   console.log('Starting the application')
   try {
+    if (!url) throw new Error('Please provide a relevant link as an argument')
     // Get links from url provided in argument.
     process.stdout.write('Fetching links...')
     let links = await scraper.getLinks(url)
