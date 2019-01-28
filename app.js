@@ -1,3 +1,10 @@
+/**
+ * The starting point of the application.
+ *
+ * @author Jim Disenstam
+ * @version 1.0
+ */
+
 'use strict'
 
 const Calendar = require('./lib/Calendars')
@@ -8,58 +15,27 @@ const output = require('./lib/output')
 
 const url = process.argv.slice(2).toString()
 
+// Scrapes urls for relevant data and outputs matched tables and movies.
 ;(async () => {
+  console.log('Starting the application')
   try {
+    // Get links from url provided in argument.
+    process.stdout.write('Fetching links...')
     let links = await scraper.getLinks(url)
     links = {
       calendar: links[0],
       cinema: links[1],
       restaurant: links[2]
     }
+    process.stdout.write('OK\n')
+    // Instantiate and populate classes for each link.
     const calendar = new Calendar(links.calendar)
     await calendar.getDays()
     const cinema = new Cinema(links.cinema, calendar.availableDays)
     await cinema.getMovies()
     const restaurant = new Restaurant(links.restaurant, cinema.checkTables)
     await restaurant.getTables()
-    output.logResults(cinema.possibleEvenings, restaurant.availableTables)
+    // Output matched result.
+    output.logResults(cinema.matchedMovies, restaurant.availableTables)
   } catch (e) { console.error(e) }
 })()
-
-// try {
-//   calendars.getLinks
-// }
-
-// const matchCalendars = async () => {
-//   try {
-//     matcher.baseLinks = await matcher.getLinks(matcher.baseURL)
-//     matcher.calendars = await matcher.getLinks(matcher.baseLinks[0])
-//     let freeDays = []
-//     for (let calendar of matcher.calendars) {
-//       let days = await matcher.getDays(calendar)
-//       freeDays.push(days)
-//     }
-//     matcher.availableDays = matcher.matchDays(freeDays)
-//     matcher.getMovies()
-//   } catch (e) { console.error(e) }
-// }
-
-// matchCalendars()
-
-// const getMatch = async (url) => {
-//   let html = await scraper.scrape(url)
-//   const mainLinks = await query.getLinks(html)
-//   html = await scraper.scrape(mainLinks[0])
-//   // let calendarLinks = await query.getLinks(html)
-//   console.log(html)
-// }
-
-// getMatch(url)
-
-// scraper.scrape('http://vhost3.lnu.se:20080/weekend')
-//   .then(res => query.getLinks(res))
-//   .then(res => {
-//     sites = res
-//   })
-//   .then(res => console.log(res))
-//   .catch(e => console.error(e))
